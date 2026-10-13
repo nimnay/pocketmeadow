@@ -15,7 +15,7 @@
 <div style="position:fixed;inset:0;overflow:hidden;background:#7dbd3a;font-family:'Jersey 10',monospace;user-select:none;-webkit-user-select:none;color:#24361a">
   <canvas ref="{{ canvasRef }}" style="position:absolute;left:0;top:0;width:100%;height:100%;display:block;cursor:none;touch-action:none;image-rendering:pixelated"></canvas>
 
-  <div style="position:absolute;left:24px;top:18px;width:min(320px,calc(100vw - 48px));display:flex;flex-direction:column;gap:10px;pointer-events:none">
+  <div style="position:absolute;left:24px;top:18px;zoom:{{ ui }};width:min(320px,calc(100vw - 48px));display:flex;flex-direction:column;gap:10px;pointer-events:none">
     <div style="font-size:56px;line-height:0.9;color:#fffdf4;text-shadow:3px 3px 0 #24361a">a small meadow</div>
     <div style="display:flex;flex-wrap:wrap;gap:4px 14px;font-size:20px;line-height:1;color:#fffdf4;text-shadow:2px 2px 0 #24361a">
       <span>{{ seasonLabel }}</span><span>{{ blooms }} blooms</span><span>{{ critters }} residents</span><span>{{ visitors }} visitors</span>
@@ -48,7 +48,7 @@
 
   <sc-if value="{{ rewardOpen }}" hint-placeholder-val="{{ false }}">
     <div onClick="{{ closeReward }}" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(36,54,26,.35);z-index:3">
-      <div onClick="{{ stopClick }}" style="width:min(380px,100%);filter:drop-shadow(0 6px 0 rgba(20,40,16,.45))">
+      <div onClick="{{ stopClick }}" style="zoom:{{ ui }};width:min(380px,100%);filter:drop-shadow(0 6px 0 rgba(20,40,16,.45))">
         <div style="background:#24361a;padding:3px;clip-path:polygon(0 6px,3px 6px,3px 3px,6px 3px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 3px,calc(100% - 3px) 3px,calc(100% - 3px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 3px) calc(100% - 6px),calc(100% - 3px) calc(100% - 3px),calc(100% - 6px) calc(100% - 3px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 3px),3px calc(100% - 3px),3px calc(100% - 6px),0 calc(100% - 6px))">
           <div style="background:#f6f1e2;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px));padding:16px 20px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
             <span style="font-size:18px;line-height:1;color:#b8862a">journal complete · 20 / 20</span>
@@ -70,7 +70,7 @@
   </sc-if>
 
   <sc-if value="{{ toastOn }}" hint-placeholder-val="{{ false }}">
-    <div style="position:absolute;top:20px;left:50%;transform:translateX(-50%);max-width:calc(100vw - 32px);pointer-events:none;filter:drop-shadow(0 4px 0 rgba(20,40,16,.45))">
+    <div style="position:absolute;top:20px;left:50%;transform:translateX(-50%);zoom:{{ ui }};max-width:calc(100vw - 32px);pointer-events:none;filter:drop-shadow(0 4px 0 rgba(20,40,16,.45))">
       <div style="background:#24361a;padding:3px;clip-path:polygon(0 6px,3px 6px,3px 3px,6px 3px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 3px,calc(100% - 3px) 3px,calc(100% - 3px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 3px) calc(100% - 6px),calc(100% - 3px) calc(100% - 3px),calc(100% - 6px) calc(100% - 3px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 3px),3px calc(100% - 3px),3px calc(100% - 6px),0 calc(100% - 6px))">
         <div style="background:#f7e7a1;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px));padding:8px 18px 10px;display:flex;flex-direction:column;align-items:center;gap:2px">
           <span style="font-size:16px;line-height:1;color:#6b5a2c">new in your journal</span>
@@ -80,7 +80,7 @@
     </div>
   </sc-if>
 
-  <div style="position:absolute;right:20px;top:18px;display:flex;flex-direction:column;align-items:flex-end;gap:10px">
+  <div style="position:absolute;right:20px;top:18px;zoom:{{ ui }};display:flex;flex-direction:column;align-items:flex-end;gap:10px">
     <div style="filter:drop-shadow(0 4px 0 rgba(20,40,16,.45))">
       <div style="background:#24361a;padding:3px;clip-path:polygon(0 6px,3px 6px,3px 3px,6px 3px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 3px,calc(100% - 3px) 3px,calc(100% - 3px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 3px) calc(100% - 6px),calc(100% - 3px) calc(100% - 3px),calc(100% - 6px) calc(100% - 3px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 3px),3px calc(100% - 3px),3px calc(100% - 6px),0 calc(100% - 6px))">
         <div style="background:#f6f1e2;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px));padding:4px;display:flex;gap:2px">
@@ -121,18 +121,21 @@
         </div>
       </sc-for>
     </div>
-  </div>
-
-  <div style="position:absolute;right:20px;top:236px;filter:drop-shadow(0 4px 0 rgba(20,40,16,.45))">
+    <div style="filter:drop-shadow(0 4px 0 rgba(20,40,16,.45))">
     <div style="background:#24361a;padding:3px;clip-path:polygon(0 6px,3px 6px,3px 3px,6px 3px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 3px,calc(100% - 3px) 3px,calc(100% - 3px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 3px) calc(100% - 6px),calc(100% - 3px) calc(100% - 3px),calc(100% - 6px) calc(100% - 3px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 3px),3px calc(100% - 3px),3px calc(100% - 6px),0 calc(100% - 6px))">
       <div style="background:#f6f1e2;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px));padding:4px;display:flex;gap:2px">
         <button onClick="{{ onMusic }}" style="display:flex;align-items:center;gap:6px;padding:5px 10px 6px;border:none;background:{{ musicBg }};color:#24361a;font-family:'Jersey 10',monospace;font-size:20px;line-height:1;cursor:pointer;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px))"><span style="width:8px;height:8px;border:2px solid #24361a;background:{{ musicDot }}"></span>music</button>
         <button onClick="{{ onAmb }}" style="display:flex;align-items:center;gap:6px;padding:5px 10px 6px;border:none;background:{{ ambBg }};color:#24361a;font-family:'Jersey 10',monospace;font-size:20px;line-height:1;cursor:pointer;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px))"><span style="width:8px;height:8px;border:2px solid #24361a;background:{{ ambDot }}"></span>wildlife &amp; sfx</button>
+        <label title="volume" style="display:flex;align-items:center;gap:6px;padding:5px 10px 6px;font-size:20px;line-height:1;color:#24361a">vol
+          <input type="range" min="0" max="100" step="1" value="{{ volume }}" onInput="{{ onVolume }}" onChange="{{ onVolume }}" style="width:90px;accent-color:#7dbd3a;cursor:pointer">
+          <span style="width:28px;text-align:right;color:#5b6b3e">{{ volume }}</span>
+        </label>
       </div>
+    </div>
     </div>
   </div>
 
-  <div style="position:absolute;left:50%;bottom:18px;transform:translateX(-50%);max-width:calc(100vw - 24px);display:flex;flex-direction:column;align-items:center;gap:10px">
+  <div style="position:absolute;left:50%;bottom:18px;transform:translateX(-50%);zoom:{{ ui }};max-width:calc(100vw - 24px);display:flex;flex-direction:column;align-items:center;gap:10px">
     <div style="padding:5px 12px 6px;background:#24361a;color:#f6f1e2;font-size:18px;line-height:1;pointer-events:none;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px))">{{ tip }}</div>
     <div style="max-width:100%;filter:drop-shadow(0 4px 0 rgba(20,40,16,.45))">
       <div style="background:#24361a;padding:3px;clip-path:polygon(0 6px,3px 6px,3px 3px,6px 3px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 3px,calc(100% - 3px) 3px,calc(100% - 3px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 3px) calc(100% - 6px),calc(100% - 3px) calc(100% - 3px),calc(100% - 6px) calc(100% - 3px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 3px),3px calc(100% - 3px),3px calc(100% - 6px),0 calc(100% - 6px))">
@@ -157,9 +160,9 @@
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;windStrength&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0,&quot;max&quot;:2.5,&quot;step&quot;:0.1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Atmosphere&quot;},&quot;autoCycle&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Atmosphere&quot;},&quot;autoSeason&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Atmosphere&quot;},&quot;grassDensity&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0.4,&quot;max&quot;:1.6,&quot;step&quot;:0.1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Texture&quot;},&quot;pixelSize&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:3,&quot;min&quot;:2,&quot;max&quot;:5,&quot;step&quot;:1,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Texture&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;windStrength&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0,&quot;max&quot;:2.5,&quot;step&quot;:0.1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Atmosphere&quot;},&quot;autoCycle&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Atmosphere&quot;},&quot;autoSeason&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Atmosphere&quot;},&quot;grassDensity&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0.4,&quot;max&quot;:1.6,&quot;step&quot;:0.1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Texture&quot;},&quot;zoomOut&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1.5,&quot;min&quot;:1,&quot;max&quot;:2,&quot;step&quot;:0.25,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Texture&quot;},&quot;pixelSize&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:3,&quot;min&quot;:2,&quot;max&quot;:5,&quot;step&quot;:1,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Texture&quot;}}">
 class Component extends DCLogic {
-  state = { cat: 0, tool: 'daisy', tod: 1, season: 1, weather: 0, blooms: 0, trees: 0, critters: 0, visitors: 0, music: true, amb: true, audioOn: false, found: [], toast: '', journalOpen: false, won: false, rewardOpen: false, basket: { cabbage: 0, pumpkin: 0, berries: 0 } };
+  state = { cat: 0, tool: 'daisy', tod: 1, season: 1, weather: 0, blooms: 0, trees: 0, critters: 0, visitors: 0, music: true, amb: true, audioOn: false, volume: 80, vw: window.innerWidth, vh: window.innerHeight, found: [], toast: '', journalOpen: false, won: false, rewardOpen: false, basket: { cabbage: 0, pumpkin: 0, berries: 0 } };
   canvasRef = React.createRef();
   JKEY = 'small-meadow-journal';
   WKEY = 'small-meadow-reward';
@@ -225,6 +228,17 @@ class Component extends DCLogic {
   }
   toggleMusic = () => { const v = !this.state.music; this.setState({ music: v }); this.audio && this.audio.setMusic(v); };
   toggleAmb = () => { const v = !this.state.amb; this.setState({ amb: v }); this.audio && this.audio.setAmbient(v); };
+  setVolume = e => {
+    const v = Math.max(0, Math.min(100, +e.target.value || 0)); this.setState({ volume: v });
+    this.audio && this.audio.setVolume(v / 100);
+    try { localStorage.setItem('small-meadow-volume', String(v)); } catch (err) { }
+  };
+  onResize = () => this.setState({ vw: window.innerWidth, vh: window.innerHeight });
+  uiScale() {
+    // shrink the panels along with the zoomed-out meadow, and further on small windows
+    const z = 1 / Math.sqrt(this.props.zoomOut ?? 1.5), fit = Math.min(1, this.state.vw / 1300, this.state.vh / 820);
+    return Math.max(0.55, Math.round(z * fit * 100) / 100);
+  }
   toggleJournal = () => { this.setState(s => ({ journalOpen: !s.journalOpen })); this.ui(); };
   postcard = () => {
     if (!this.engine) return;
@@ -238,7 +252,7 @@ class Component extends DCLogic {
       const m = await import(new URL('js/garden-audio.js', document.baseURI).href);
       if (this._dead) return;
       this.audio = m.createAudio(); this.audio.resume();
-      this.audio.setMusic(this.state.music); this.audio.setAmbient(this.state.amb);
+      this.audio.setMusic(this.state.music); this.audio.setAmbient(this.state.amb); this.audio.setVolume(this.state.volume / 100);
       this.audio.sfx('env', { season: this.SEASONS[this.state.season][0] });
       this.setState({ audioOn: true });
     } catch (e) { this._audioLoading = false; }
@@ -258,17 +272,19 @@ class Component extends DCLogic {
   };
   async componentDidMount() {
     try { const found = JSON.parse(localStorage.getItem(this.JKEY) || '[]'); this.setState({ found, won: localStorage.getItem(this.WKEY) === '1' || this.JOURNAL.every(j => found.includes(j[0])) }); } catch (e) { }
+    try { const v = localStorage.getItem('small-meadow-volume'); if (v != null) this.setState({ volume: +v }); } catch (e) { }
     try { this.seen = new Set(JSON.parse(localStorage.getItem('small-meadow-seasons') || '[]')); } catch (e) { this.seen = new Set(); }
     this.seen.add(this.state.season);
     window.addEventListener('keydown', this.onKey);
     window.addEventListener('pointerdown', this.ensureAudio);
+    window.addEventListener('resize', this.onResize);
     this.seasonTimer = setInterval(() => { if (this.props.autoSeason) this.setSeason((this.state.season + 1) % 4); }, 45000);
     const mod = await import(new URL('js/garden-engine.js', document.baseURI).href);
     if (this._dead) return;
     this.mod = mod;
     Object.entries(this.iconEls).forEach(([k, el]) => mod.drawIcon(el, k));
     this.engine = mod.createGarden(this.canvasRef.current, {
-      getOpts: () => ({ wind: this.props.windStrength ?? 1, density: this.props.grassDensity ?? 1, auto: !!this.props.autoCycle, pix: Math.round(this.props.pixelSize ?? 3) }),
+      getOpts: () => ({ wind: this.props.windStrength ?? 1, density: this.props.grassDensity ?? 1, auto: !!this.props.autoCycle, pix: Math.round(this.props.pixelSize ?? 3), zoom: this.props.zoomOut ?? 1.5 }),
       onStats: s => { const st = this.state; if (s.blooms !== st.blooms || s.visitors !== st.visitors || s.trees !== st.trees || s.critters !== st.critters) this.setState(s); },
       onTod: i => this.setState({ tod: i }),
       onBasket: b => this.setState({ basket: b }),
@@ -279,7 +295,7 @@ class Component extends DCLogic {
   }
   componentWillUnmount() {
     this._dead = true; clearInterval(this.seasonTimer); clearTimeout(this._tt);
-    window.removeEventListener('keydown', this.onKey); window.removeEventListener('pointerdown', this.ensureAudio);
+    window.removeEventListener('keydown', this.onKey); window.removeEventListener('resize', this.onResize); window.removeEventListener('pointerdown', this.ensureAudio);
     this.engine && this.engine.destroy(); this.audio && this.audio.destroy();
   }
   renderVals() {
@@ -287,7 +303,7 @@ class Component extends DCLogic {
     const sel = '#a8d863', on = '#7dbd3a', off = '#cfc8b4', CP = 'transparent';
     const bk = [['cabbage', 'cabbage'], ['pumpkin', 'pumpkin'], ['berries', 'berries']].filter(([k]) => basket[k] > 0).map(([k, l]) => basket[k] + ' ' + l);
     return {
-      canvasRef: this.canvasRef,
+      canvasRef: this.canvasRef, ui: this.uiScale(),
       seasonLabel: this.SEASONS[season][0] + ' · ' + this.WEATHER[weather][1],
       blooms: this.state.blooms, critters: this.state.critters, visitors: this.state.visitors,
       basketLabel: bk.length ? 'basket · ' + bk.join(' · ') : 'basket empty',
@@ -312,7 +328,7 @@ class Component extends DCLogic {
       toastOn: !!this.state.toast, toast: this.state.toast,
       musicBg: music && audioOn ? sel : CP, musicDot: music ? on : off,
       ambBg: amb && audioOn ? sel : CP, ambDot: amb ? on : off,
-      onMusic: this.toggleMusic, onAmb: this.toggleAmb,
+      onMusic: this.toggleMusic, onAmb: this.toggleAmb, volume: this.state.volume, onVolume: this.setVolume,
     };
   }
 }

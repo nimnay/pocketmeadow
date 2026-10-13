@@ -148,6 +148,7 @@ export function createAudio() {
 
   return {
     resume: () => AC.resume(), sfx,
+    setVolume(v) { master.gain.setTargetAtTime(0.9 * v, AC.currentTime, 0.05); },
     setMusic(v) { musicOn = v; musicBus.gain.setTargetAtTime(v ? 0.55 : 0, AC.currentTime, 0.3); },
     setAmbient(v) { ambOn = v; sfx('env', {}); },
     destroy() { clearInterval(iv); clearTimeout(purrTO); AC.close(); },

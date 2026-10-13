@@ -53,7 +53,7 @@ const TOD = [
 ];
 
 // ---------- pixel art ----------
-let PIX = 3;
+let PIX = 3, ZOOM = 1;
 const HX = {};
 const rgb = h => HX[h] || (HX[h] = [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]);
 const lit = (h, k) => '#' + rgb(h).map(v => Math.round(clamp(k < 0 ? v * (1 + k) : v + (255 - v) * k, 0, 255)).toString(16).padStart(2, '0')).join('');
@@ -519,10 +519,10 @@ export function createGarden(canvas, opts) {
     for (let i = 0; i < n; i++) buckets[(r() * 6) | 0].push({ x: (r() * cw) | 0, y: (r() * ch) | 0, c: 0 });
   }
   function resize() {
-    const rc = (canvas.parentElement || canvas).getBoundingClientRect(), cw = Math.max(1, Math.ceil(rc.width / PIX)), ch = Math.max(1, Math.ceil(rc.height / PIX));
+    const rc = (canvas.parentElement || canvas).getBoundingClientRect(), cw = Math.max(1, Math.ceil(rc.width * ZOOM / PIX)), ch = Math.max(1, Math.ceil(rc.height * ZOOM / PIX));
     if (cw * PIX === W && ch * PIX === H && dpr === PIX && ground) return;
     const pixChanged = dpr !== PIX; dpr = PIX; W = cw * PIX; H = ch * PIX;
-    canvas.width = cw; canvas.height = ch; canvas.style.width = W + 'px'; canvas.style.height = H + 'px'; canvas.style.imageRendering = 'pixelated';
+    canvas.width = cw; canvas.height = ch; canvas.style.width = W / ZOOM + 'px'; canvas.style.height = H / ZOOM + 'px'; canvas.style.imageRendering = 'pixelated';
     grounds = {}; prevGround = null; ground = groundFor(season); flakes = []; canopy = makeCanopy(cw, ch); buildBlades(opts.getOpts().density); rebuildMask(); seedLitter(); fogC = null; rbC = null;
     if (!ffs.length) { const r = rng(3); for (let i = 0; i < 46; i++) ffs.push({ x: r() * W, y: r() * H, ph: r() * TAU, sp: 0.6 + r() * 0.8 }); }
     plants.forEach(p => { p.x = p.nx * W; p.y = p.ny * H; if (pixChanged) p._sk = null; });
@@ -619,7 +619,7 @@ export function createGarden(canvas, opts) {
     opts.onAction && opts.onAction();
   }
   const spacing = () => tool === 'path' || tool === 'bed' ? 5 : tool === 'harvest' ? 20 : CRITTERS.includes(tool) ? 1e9 : isSeed(tool) ? (tool === 'stone' ? 24 : tool === 'fence' ? 22 : TYPES[tool].R * (LAYER(tool) === 'high' ? 1.5 : 1.25)) : tool === 'water' ? 34 : 18;
-  const pos = e => { const r = canvas.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  const pos = e => { const r = canvas.getBoundingClientRect(); return [(e.clientX - r.left) * ZOOM, (e.clientY - r.top) * ZOOM]; };
   const onDown = e => { try { canvas.setPointerCapture(e.pointerId); } catch (_) { } down = true; fenceLast = null; const [x, y] = pos(e); mouse.x = x; mouse.y = y; mouse.on = true; act(x, y); last = [x, y]; };
   const onMove = e => { const [x, y] = pos(e); const tn = now(); mspeed = Math.hypot(x - mouse.x, y - mouse.y) / Math.max(0.008, tn - lastMove); lastMove = tn; mouse.x = x; mouse.y = y; mouse.on = true; if (down && last && Math.hypot(x - last[0], y - last[1]) > spacing()) { act(x, y); last = [x, y]; } };
   const onUp = e => { down = false; last = null; if (e.pointerType !== 'mouse') mouse.on = false; };
@@ -878,6 +878,7 @@ export function createGarden(canvas, opts) {
     const T = ms / 1000, dt = Math.min(0.05, Math.max(0, T - prevT)); prevT = T;
     const o = opts.getOpts(), wk = o.wind * (1 + stormK * 0.9);
     if (o.pix && o.pix !== PIX) { PIX = o.pix; resize(); }
+    if (o.zoom && o.zoom !== ZOOM) { ZOOM = o.zoom; resize(); }
     if (Math.abs(o.density - curDensity) > 0.01) buildBlades(o.density);
     if (!started) { started = true; load(); rollNext(); seedLitter(); }
     if (o.auto) { todPos = (todPos + dt * 0.03) % 5; todTarget = todPos; const idx = Math.round(todPos) % 5; if (idx !== lastTodIdx) { lastTodIdx = idx; opts.onTod && opts.onTod(idx); } }
