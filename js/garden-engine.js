@@ -558,27 +558,81 @@ export function createGarden(canvas, opts) {
   }
   function farm() { spawnCritter('cow', 0.36 * W, 0.24 * H); spawnCritter('cow', 0.27 * W, 0.3 * H); for (let i = 0; i < 3; i++) spawnCritter('sheep', (0.14 + i * 0.04) * W, (0.16 + (i % 2) * 0.05) * H); }
   function starter() {
-    let d = 0.4; const R = Math.random;
-    const add = (type, nx, ny, o = {}) => { const p = randPlant(type, nx * W, ny * H, d); Object.assign(p, o); d += 0.06; return p; };
+    let d = 0.4; const R = Math.random, pick = a => a[(R() * a.length) | 0];
+    const add = (type, nx, ny, o = {}) => { const p = randPlant(type, nx * W, ny * H, d); Object.assign(p, o); d += 0.03; return p; };
     const cluster = (type, cx, cy, n, spread) => { for (let i = 0; i < n; i++) { const a = R() * TAU, dd = Math.sqrt(R()) * spread; add(type, cx + Math.cos(a) * dd / W, cy + Math.sin(a) * dd / H); } };
-    const pond = add('pond', 0.24, 0.64, { sc: 1.25 });
-    add('blanket', 0.53, 0.74, { rot: -0.18, sc: 1 });
-    for (let i = 0; i <= 12; i++) { const t = i / 12; add('stone', lerp(0.70, 0.55, t) + Math.sin(t * 3) * 0.03 + (R() - 0.5) * 0.006, lerp(0.34, 0.62, t) + (R() - 0.5) * 0.006); }
-    add('cottage', 0.76, 0.2, { rot: 0, pal: 0, sc: 1 }); add('pot', 0.715, 0.27); add('bench', 0.66, 0.2); add('birdbath', 0.47, 0.34); add('hay', 0.3, 0.16); add('hay', 0.335, 0.19);
-    add('tree', 0.04, 0.3, { sc: 1.3, pal: 0 }); add('tree', 0.95, 0.85, { sc: 1.2, pal: 1 }); add('tree', 0.95, 0.06, { sc: 0.8, pal: 2 }); add('tree', 0.13, 0.98, { sc: 0.9, pal: 3 });
-    add('bush', 0.03, 0.72); add('bush', 0.6, 0.07);
-    for (let rr = 0; rr < 2; rr++) for (let c = 0; c < 3; c++) add('cabbage', 0.85 + c * 0.028, 0.36 + rr * 0.06);
-    { let prevF = null; const per = [[0.825, 0.31], [0.935, 0.31], [0.935, 0.47], [0.825, 0.47], [0.825, 0.36]];
-      for (let e = 0; e < per.length - 1; e++) { const [ax, ay] = per[e], [bx, by] = per[e + 1], n = Math.max(1, Math.round(Math.hypot((bx - ax) * W, (by - ay) * H) / 22)); for (let i = e ? 1 : 0; i <= n; i++) { const t = i / n, p = add('fence', lerp(ax, bx, t), lerp(ay, by, t)); p.rot = 0; p.prev = prevF ? prevF.seed : null; prevF = p; } } }
-    add('pumpkin', 0.86, 0.53); add('pumpkin', 0.91, 0.56);
-    cluster('daisy', 0.4, 0.44, 10, 80); cluster('poppy', 0.63, 0.46, 5, 50); cluster('lavender', 0.62, 0.24, 4, 40); cluster('sunflower', 0.95, 0.44, 2, 30); cluster('tulip', 0.44, 0.24, 4, 40); cluster('forget', 0.35, 0.82, 5, 45);
-    add('mushroom', 0.17, 0.42); add('lantern', 0.67, 0.41); add('lantern', 0.58, 0.57); add('lantern', 0.31, 0.5);
+    const ring = (types, cx, cy, n, r, o) => { for (let i = 0; i < n; i++) { const a = i / n * TAU + R() * 0.2; add(types[i % types.length], cx + Math.cos(a) * r / W, cy + Math.sin(a) * r / H, o); } };
+    // smooth catmull-rom curve through normalized points, sampled roughly every `step` px
+    const curve = (pts, step) => {
+      const out = [];
+      for (let i = 0; i < pts.length - 1; i++) {
+        const a = pts[Math.max(0, i - 1)], b = pts[i], c = pts[i + 1], e = pts[Math.min(pts.length - 1, i + 2)], n = Math.max(1, Math.ceil(Math.hypot((c[0] - b[0]) * W, (c[1] - b[1]) * H) / step));
+        for (let j = i ? 1 : 0; j <= n; j++) { const t = j / n, t2 = t * t, t3 = t2 * t, f = k => 0.5 * (2 * b[k] + (c[k] - a[k]) * t + (2 * a[k] - 5 * b[k] + 4 * c[k] - e[k]) * t2 + (3 * b[k] - a[k] - 3 * c[k] + e[k]) * t3); out.push([f(0), f(1)]); }
+      }
+      return out;
+    };
+    const path = pts => curve(pts, 5).forEach(([nx, ny]) => paint.push({ k: 'path', nx, ny }));
+    const border = (pts, types, off, every, skip = 0.2) => {
+      const c = curve(pts, every);
+      c.forEach(([x, y], i) => {
+        if (i === 0 || i === c.length - 1) return; const [ax, ay] = c[i - 1], [bx, by] = c[i + 1], tx = (bx - ax) * W, ty = (by - ay) * H, l = Math.hypot(tx, ty) || 1;
+        for (const s of [-1, 1]) if (R() > skip) add(pick(types), x - ty / l * off * s / W + (R() - 0.5) * 6 / W, y + tx / l * off * s / H + (R() - 0.5) * 6 / H);
+      });
+    };
+    const fence = pts => {
+      let prevF = null;
+      for (let e = 0; e < pts.length - 1; e++) { const [ax, ay] = pts[e], [bx, by] = pts[e + 1], n = Math.max(1, Math.round(Math.hypot((bx - ax) * W, (by - ay) * H) / 22)); for (let i = e ? 1 : 0; i <= n; i++) { const t = i / n, p = add('fence', lerp(ax, bx, t), lerp(ay, by, t)); p.rot = 0; p.prev = prevF ? prevF.seed : null; prevF = p; } }
+    };
+    const bed = (x0, y0, x1, y1) => { for (let y = y0 * H; y <= y1 * H; y += 12) for (let x = x0 * W; x <= x1 * W; x += 12) paint.push({ k: 'bed', nx: x / W, ny: y / H }); };
+
+    // paths: cottage door down to the pond, a branch to the pasture gate, and one to the vegetable plot
+    const main = [[0.74, 0.27], [0.70, 0.38], [0.58, 0.47], [0.47, 0.53], [0.36, 0.61], [0.27, 0.69]];
+    const gate = [[0.19, 0.42], [0.22, 0.48], [0.33, 0.51], [0.47, 0.53]];
+    const veg = [[0.70, 0.38], [0.76, 0.47], [0.83, 0.51]];
+    path(main); path(gate); path(veg); bed(0.85, 0.43, 0.95, 0.61); rebuildMask();
+
+    // the pond and a picnic on its bank
+    const pond = add('pond', 0.24, 0.72, { sc: 1.3 });
+    add('blanket', 0.37, 0.75, { rot: -0.15, sc: 1 });
+    cluster('forget', 0.13, 0.83, 5, 40); cluster('forget', 0.27, 0.86, 4, 35);
+
+    // cottage, with a little garden round the birdbath
+    add('cottage', 0.74, 0.17, { rot: 0, pal: 0, sc: 1 }); add('pot', 0.69, 0.27); add('pot', 0.79, 0.27); add('bench', 0.65, 0.3);
+    add('birdbath', 0.6, 0.21); ring(['lavender', 'tulip'], 0.6, 0.21, 8, 38);
+
+    // fenced pasture with a gate onto the path
+    fence([[0.165, 0.43], [0.05, 0.43], [0.05, 0.17], [0.3, 0.17], [0.3, 0.43], [0.215, 0.43]]);
+    add('hay', 0.08, 0.22); add('hay', 0.105, 0.245); add('hay', 0.27, 0.39);
+
+    // vegetable plot: dug bed, cabbage rows, pumpkins, sunflowers peeking over the back fence
+    fence([[0.83, 0.47], [0.83, 0.40], [0.97, 0.40], [0.97, 0.64], [0.83, 0.64], [0.83, 0.55]]);
+    for (let rr = 0; rr < 2; rr++) for (let c = 0; c < 4; c++) add('cabbage', 0.865 + c * 0.026, 0.455 + rr * 0.055);
+    add('pumpkin', 0.87, 0.585); add('pumpkin', 0.905, 0.59); add('pumpkin', 0.94, 0.582);
+    for (let i = 0; i < 4; i++) add('sunflower', 0.85 + i * 0.035, 0.365 + (R() - 0.5) * 0.01);
+
+    // flower borders and lanterns along the paths
+    border(main, ['daisy', 'tulip', 'forget', 'poppy'], 22, 30);
+    border(gate, ['daisy', 'daisy', 'poppy'], 20, 34, 0.35);
+    add('lantern', 0.715, 0.33); add('lantern', 0.6, 0.51); add('lantern', 0.42, 0.53); add('lantern', 0.36, 0.6);
+
+    // wildflower meadow, stepping stones to a fairy ring at the wood's edge
+    cluster('poppy', 0.5, 0.64, 7, 60); cluster('daisy', 0.45, 0.68, 6, 50); cluster('tulip', 0.42, 0.42, 5, 45);
+    add('tree', 0.62, 0.6, { sc: 0.9, pal: 0 }); add('tree', 0.7, 0.66, { sc: 0.85, pal: 2 }); cluster('lavender', 0.66, 0.55, 3, 30);
+    curve([[0.42, 0.74], [0.5, 0.77], [0.6, 0.78], [0.68, 0.76]], 24).forEach(([x, y]) => add('stone', x + (R() - 0.5) * 0.004, y + (R() - 0.5) * 0.006));
+    ring(['mushroom'], 0.73, 0.76, 7, 44);
+
+    // trees and bushes framing the edges
+    add('tree', 0.92, 0.86, { sc: 1.25, pal: 1 }); add('tree', 0.82, 0.97, { sc: 0.95, pal: 0 }); add('tree', 0.38, 0.2, { sc: 1.05, pal: 2 });
+    add('tree', 0.95, 0.07, { sc: 0.85, pal: 3 }); add('tree', 0.03, 0.56, { sc: 1.2, pal: 0 }); add('tree', 0.07, 0.97, { sc: 1, pal: 2 });
+    add('bush', 0.5, 0.1); add('bush', 0.88, 0.25); add('bush', 0.14, 0.53); add('bush', 0.6, 0.96); add('bush', 0.98, 0.7);
+
     setTimeout(() => {
       spawnCritter('duck', pond.x, pond.y, { style: 0, duckling: false }); spawnCritter('duck', pond.x, pond.y, { style: 1, duckling: false });
       for (let i = 0; i < 3; i++) spawnCritter('duck', pond.x, pond.y, { duckling: true });
-      spawnCritter('rabbit', 0.47 * W, 0.52 * H); spawnCritter('rabbit', 0.5 * W, 0.48 * H);
-      const cat = spawnCritter('cat', 0.53 * W - 10, 0.74 * H + 4); if (cat) { cat.state = 'sleep'; cat.idle = 99; }
-      spawnCritter('hedgehog', 0.22 * W, 0.87 * H); spawnCritter('snail', 0.62 * W, 0.65 * H); farm(); save();
+      spawnCritter('rabbit', 0.78 * W, 0.6 * H); spawnCritter('rabbit', 0.76 * W, 0.67 * H);
+      const cat = spawnCritter('cat', 0.37 * W - 10, 0.75 * H + 4); if (cat) { cat.state = 'sleep'; cat.idle = 99; }
+      spawnCritter('hedgehog', 0.86 * W, 0.76 * H); spawnCritter('snail', 0.3 * W, 0.92 * H);
+      spawnCritter('cow', 0.24 * W, 0.28 * H); spawnCritter('cow', 0.13 * W, 0.36 * H); for (let i = 0; i < 3; i++) spawnCritter('sheep', (0.1 + i * 0.04) * W, (0.24 + (i % 2) * 0.04) * H); save();
     }, 1600);
   }
   function spark(x, y, n, spread) { for (let i = 0; i < n; i++) { const a = Math.random() * TAU, d = Math.random() * spread; parts.push({ k: 'spark', x: x + Math.cos(a) * d, y: y + Math.sin(a) * d, life: -Math.random() * 0.3, max: 0.7, s: 2.5 + Math.random() * 2.5 }); } }
