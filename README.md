@@ -2,17 +2,9 @@
 
 A cosy pixel-art garden in the browser. Sow flowers, grow crops, build paths and ponds, invite critters, and change the season, time of day and weather. Your meadow saves in your browser.
 
-## Play
+**▶ Play it here: https://nimnay.github.io/pocketmeadow/**
 
-The game loads its scripts by relative path, so serve the folder rather than opening the file directly:
-
-```sh
-python -m http.server 8000
-```
-
-Then open http://localhost:8000.
-
-**Keys:** `1`–`7` tools · `Tab` next category · `S` season · `R` weather · `B` breeze · `J` journal · `P` postcard · `Esc` close the reward card
+**Keys:** `1`–`7` tools · `Tab` next category · `S` season · `R` weather · `B` breeze · `J` journal · `P` postcard
 
 ## Journal (goals)
 
@@ -39,14 +31,7 @@ Open the **journal** to track 20 discoveries. Undiscovered ones show a hint.
 - [ ] dug a flower bed: build a bed
 - [ ] sent a postcard: take a picture
 
-## Reward
-
-Fill in all 20 and the meadow celebrates: a rainbow appears, petals drift across the field, and a "the meadow is yours" card appears. You also unlock:
-
-- **a rainbow button** to call up a rainbow any time
-- **golden postcards**: a gold frame and a "meadow keeper" caption
-
-The journal button gets a ★, and a **your reward** button in the journal lets you see the card again.
+Fill in the whole journal and the meadow has a little something for you. 🌼
 
 ## Layout
 
