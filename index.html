@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jersey+10&display=swap" rel="stylesheet">
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#7dbd3a}a{color:#f6f1e2}a:hover{color:#ffffff}button{-webkit-tap-highlight-color:transparent}</style>
+</helmet>
+<div style="position:fixed;inset:0;overflow:hidden;background:#7dbd3a;font-family:'Jersey 10',monospace;user-select:none;-webkit-user-select:none;color:#24361a">
+  <canvas ref="{{ canvasRef }}" style="position:absolute;left:0;top:0;width:100%;height:100%;display:block;cursor:none;touch-action:none;image-rendering:pixelated"></canvas>
+
+  <div style="position:absolute;left:24px;top:18px;width:min(320px,calc(100vw - 48px));display:flex;flex-direction:column;gap:10px;pointer-events:none">
+    <div style="font-size:56px;line-height:0.9;color:#fffdf4;text-shadow:3px 3px 0 #24361a">a small meadow</div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px 14px;font-size:20px;line-height:1;color:#fffdf4;text-shadow:2px 2px 0 #24361a">
+      <span>{{ seasonLabel }}</span><span>{{ blooms }} blooms</span><span>{{ critters }} residents</span><span>{{ visitors }} visitors</span>
+    </div>
+    <div style="font-size:20px;line-height:1;color:#f7e7a1;text-shadow:2px 2px 0 #24361a">{{ basketLabel }}</div>
+    <sc-if value="{{ journalOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="pointer-events:auto;filter:drop-shadow(0 4px 0 rgba(20,40,16,.45))">
+        <div style="background:#24361a;padding:3px;clip-path:polygon(0 6px,3px 6px,3px 3px,6px 3px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 3px,calc(100% - 3px) 3px,calc(100% - 3px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 3px) calc(100% - 6px),calc(100% - 3px) calc(100% - 3px),calc(100% - 6px) calc(100% - 3px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 3px),3px calc(100% - 3px),3px calc(100% - 6px),0 calc(100% - 6px))">
+          <div style="background:#f6f1e2;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px));padding:10px 12px 12px;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+              <span style="font-size:26px;line-height:1">journal</span>
+              <span style="font-size:20px;line-height:1;color:#5b6b3e">{{ foundCount }}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px;max-height:calc(100vh - 380px);min-height:80px;overflow-y:auto">
+              <sc-for list="{{ journal }}" as="j" hint-placeholder-count="12">
+                <div style="display:flex;gap:9px;align-items:center;font-size:18px;line-height:1.05;color:{{ j.ink }}">
+                  <span style="width:10px;height:10px;flex:none;border:2px solid #24361a;background:{{ j.box }}"></span>
+                  <span>{{ j.text }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <sc-if value="{{ won }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ openReward }}" style="padding:5px 10px 6px;border:none;background:#f7e7a1;color:#24361a;font-family:'Jersey 10',monospace;font-size:20px;line-height:1;cursor:pointer;box-shadow:inset 0 0 0 3px #24361a;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px))">your reward ★</button>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{ rewardOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeReward }}" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(36,54,26,.35);z-index:3">
+      <div onClick="{{ stopClick }}" style="width:min(380px,100%);filter:drop-shadow(0 6px 0 rgba(20,40,16,.45))">
+        <div style="background:#24361a;padding:3px;clip-path:polygon(0 6px,3px 6px,3px 3px,6px 3px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 3px,calc(100% - 3px) 3px,calc(100% - 3px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 3px) calc(100% - 6px),calc(100% - 3px) calc(100% - 3px),calc(100% - 6px) calc(100% - 3px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 3px),3px calc(100% - 3px),3px calc(100% - 6px),0 calc(100% - 6px))">
+          <div style="background:#f6f1e2;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px));padding:16px 20px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+            <span style="font-size:18px;line-height:1;color:#b8862a">journal complete · 20 / 20</span>
+            <span style="font-size:44px;line-height:0.9">the meadow is yours</span>
+            <span style="font-size:20px;line-height:1.1;color:#5b6b3e">you found everything the meadow had to show you. as a thank-you:</span>
+            <div style="display:flex;flex-direction:column;gap:6px;align-self:stretch;text-align:left">
+              <sc-for list="{{ rewards }}" as="r" hint-placeholder-count="2">
+                <div style="display:flex;gap:9px;align-items:center;font-size:20px;line-height:1.05">
+                  <span style="width:10px;height:10px;flex:none;border:2px solid #24361a;background:#f7e7a1"></span>
+                  <span>{{ r.text }}</span>
+                </div>
+              </sc-for>
+            </div>
+            <button onClick="{{ closeReward }}" style="margin-top:4px;padding:6px 16px 7px;border:none;background:#a8d863;color:#24361a;font-family:'Jersey 10',monospace;font-size:22px;line-height:1;cursor:pointer;box-shadow:inset 0 0 0 3px #24361a;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px))">keep gardening</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ toastOn }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;top:20px;left:50%;transform:translateX(-50%);max-width:calc(100vw - 32px);pointer-events:none;filter:drop-shadow(0 4px 0 rgba(20,40,16,.45))">
+      <div style="background:#24361a;padding:3px;clip-path:polygon(0 6px,3px 6px,3px 3px,6px 3px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 3px,calc(100% - 3px) 3px,calc(100% - 3px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 3px) calc(100% - 6px),calc(100% - 3px) calc(100% - 3px),calc(100% - 6px) calc(100% - 3px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 3px),3px calc(100% - 3px),3px calc(100% - 6px),0 calc(100% - 6px))">
+        <div style="background:#f7e7a1;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px));padding:8px 18px 10px;display:flex;flex-direction:column;align-items:center;gap:2px">
+          <span style="font-size:16px;line-height:1;color:#6b5a2c">new in your journal</span>
+          <span style="font-size:28px;line-height:1;text-align:center">{{ toast }}</span>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <div style="position:absolute;right:20px;top:18px;display:flex;flex-direction:column;align-items:flex-end;gap:10px">
+    <div style="filter:drop-shadow(0 4px 0 rgba(20,40,16,.45))">
+      <div style="background:#24361a;padding:3px;clip-path:polygon(0 6px,3px 6px,3px 3px,6px 3px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 3px,calc(100% - 3px) 3px,calc(100% - 3px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 3px) calc(100% - 6px),calc(100% - 3px) calc(100% - 3px),calc(100% - 6px) calc(100% - 3px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 3px),3px calc(100% - 3px),3px calc(100% - 6px),0 calc(100% - 6px))">
+        <div style="background:#f6f1e2;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px));padding:4px;display:flex;gap:2px">
+          <sc-for list="{{ seasons }}" as="t" hint-placeholder-count="4">
+            <button onClick="{{ t.onClick }}" style="display:flex;align-items:center;gap:6px;padding:5px 10px 6px;border:none;background:{{ t.bg }};color:#24361a;font-family:'Jersey 10',monospace;font-size:20px;line-height:1;cursor:pointer;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px))">
+              <span style="width:8px;height:8px;border:2px solid #24361a;background:{{ t.dot }}"></span>{{ t.label }}
+            </button>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+    <div style="filter:drop-shadow(0 4px 0 rgba(20,40,16,.45))">
+      <div style="background:#24361a;padding:3px;clip-path:polygon(0 6px,3px 6px,3px 3px,6px 3px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 3px,calc(100% - 3px) 3px,calc(100% - 3px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 3px) calc(100% - 6px),calc(100% - 3px) calc(100% - 3px),calc(100% - 6px) calc(100% - 3px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 3px),3px calc(100% - 3px),3px calc(100% - 6px),0 calc(100% - 6px))">
+        <div style="background:#f6f1e2;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px));padding:4px;display:flex;gap:2px">
+          <sc-for list="{{ tods }}" as="t" hint-placeholder-count="5">
+            <button onClick="{{ t.onClick }}" style="display:flex;align-items:center;gap:6px;padding:5px 9px 6px;border:none;background:{{ t.bg }};color:#24361a;font-family:'Jersey 10',monospace;font-size:18px;line-height:1;cursor:pointer;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px))">
+              <span style="width:8px;height:8px;border:2px solid #24361a;background:{{ t.dot }}"></span>{{ t.label }}
+            </button>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+    <div style="filter:drop-shadow(0 4px 0 rgba(20,40,16,.45))">
+      <div style="background:#24361a;padding:3px;clip-path:polygon(0 6px,3px 6px,3px 3px,6px 3px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 3px,calc(100% - 3px) 3px,calc(100% - 3px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 3px) calc(100% - 6px),calc(100% - 3px) calc(100% - 3px),calc(100% - 6px) calc(100% - 3px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 3px),3px calc(100% - 3px),3px calc(100% - 6px),0 calc(100% - 6px))">
+        <div style="background:#f6f1e2;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px));padding:4px;display:flex;gap:2px">
+          <sc-for list="{{ weathers }}" as="t" hint-placeholder-count="4">
+            <button onClick="{{ t.onClick }}" style="display:flex;align-items:center;gap:6px;padding:5px 10px 6px;border:none;background:{{ t.bg }};color:#24361a;font-family:'Jersey 10',monospace;font-size:20px;line-height:1;cursor:pointer;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px))">
+              <span style="width:8px;height:8px;border:2px solid #24361a;background:{{ t.dot }}"></span>{{ t.label }}
+            </button>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+      <sc-for list="{{ actions }}" as="a" hint-placeholder-count="4">
+        <div style="filter:drop-shadow(0 4px 0 rgba(20,40,16,.45))">
+          <button onClick="{{ a.onClick }}" style="padding:6px 12px 7px;border:none;background:{{ a.bg }};color:{{ a.ink }};font-family:'Jersey 10',monospace;font-size:20px;line-height:1;white-space:nowrap;cursor:pointer;box-shadow:inset 0 0 0 3px #24361a;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px))">{{ a.label }}</button>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="position:absolute;right:20px;top:236px;filter:drop-shadow(0 4px 0 rgba(20,40,16,.45))">
+    <div style="background:#24361a;padding:3px;clip-path:polygon(0 6px,3px 6px,3px 3px,6px 3px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 3px,calc(100% - 3px) 3px,calc(100% - 3px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 3px) calc(100% - 6px),calc(100% - 3px) calc(100% - 3px),calc(100% - 6px) calc(100% - 3px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 3px),3px calc(100% - 3px),3px calc(100% - 6px),0 calc(100% - 6px))">
+      <div style="background:#f6f1e2;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px));padding:4px;display:flex;gap:2px">
+        <button onClick="{{ onMusic }}" style="display:flex;align-items:center;gap:6px;padding:5px 10px 6px;border:none;background:{{ musicBg }};color:#24361a;font-family:'Jersey 10',monospace;font-size:20px;line-height:1;cursor:pointer;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px))"><span style="width:8px;height:8px;border:2px solid #24361a;background:{{ musicDot }}"></span>music</button>
+        <button onClick="{{ onAmb }}" style="display:flex;align-items:center;gap:6px;padding:5px 10px 6px;border:none;background:{{ ambBg }};color:#24361a;font-family:'Jersey 10',monospace;font-size:20px;line-height:1;cursor:pointer;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px))"><span style="width:8px;height:8px;border:2px solid #24361a;background:{{ ambDot }}"></span>wildlife &amp; sfx</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="position:absolute;left:50%;bottom:18px;transform:translateX(-50%);max-width:calc(100vw - 24px);display:flex;flex-direction:column;align-items:center;gap:10px">
+    <div style="padding:5px 12px 6px;background:#24361a;color:#f6f1e2;font-size:18px;line-height:1;pointer-events:none;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px))">{{ tip }}</div>
+    <div style="max-width:100%;filter:drop-shadow(0 4px 0 rgba(20,40,16,.45))">
+      <div style="background:#24361a;padding:3px;clip-path:polygon(0 6px,3px 6px,3px 3px,6px 3px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 3px,calc(100% - 3px) 3px,calc(100% - 3px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 3px) calc(100% - 6px),calc(100% - 3px) calc(100% - 3px),calc(100% - 6px) calc(100% - 3px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 3px),3px calc(100% - 3px),3px calc(100% - 6px),0 calc(100% - 6px))">
+        <div style="background:#f6f1e2;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px));padding:6px;display:flex;flex-direction:column;gap:4px">
+          <div style="display:flex;gap:2px;overflow-x:auto">
+            <sc-for list="{{ cats }}" as="c" hint-placeholder-count="5">
+              <button onClick="{{ c.onClick }}" style="flex:none;padding:4px 12px 5px;border:none;background:{{ c.bg }};color:{{ c.ink }};font-family:'Jersey 10',monospace;font-size:22px;line-height:1;cursor:pointer;clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px))">{{ c.label }}</button>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:2px;overflow-x:auto;min-height:80px">
+            <sc-for list="{{ tools }}" as="s" hint-placeholder-count="6">
+              <button onClick="{{ s.onClick }}" title="{{ s.label }}" style="position:relative;flex:none;width:68px;padding:6px 0 6px;border:none;background:{{ s.bg }};display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;font-family:'Jersey 10',monospace;transform:translateY({{ s.lift }});clip-path:polygon(0 3px,3px 3px,3px 0,calc(100% - 3px) 0,calc(100% - 3px) 3px,100% 3px,100% calc(100% - 3px),calc(100% - 3px) calc(100% - 3px),calc(100% - 3px) 100%,3px 100%,3px calc(100% - 3px),0 calc(100% - 3px))">
+                <canvas ref="{{ s.ref }}" width="24" height="24" style="width:48px;height:48px;image-rendering:pixelated"></canvas>
+                <span style="font-size:17px;line-height:1;color:{{ s.ink }};white-space:nowrap">{{ s.label }}</span>
+                <span style="position:absolute;top:3px;left:6px;font-size:14px;line-height:1;color:#8f9a72">{{ s.key }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;windStrength&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0,&quot;max&quot;:2.5,&quot;step&quot;:0.1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Atmosphere&quot;},&quot;autoCycle&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Atmosphere&quot;},&quot;autoSeason&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Atmosphere&quot;},&quot;grassDensity&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:1,&quot;min&quot;:0.4,&quot;max&quot;:1.6,&quot;step&quot;:0.1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Texture&quot;},&quot;pixelSize&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:3,&quot;min&quot;:2,&quot;max&quot;:5,&quot;step&quot;:1,&quot;unit&quot;:&quot;px&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Texture&quot;}}">
+class Component extends DCLogic {
+  state = { cat: 0, tool: 'daisy', tod: 1, season: 1, weather: 0, blooms: 0, trees: 0, critters: 0, visitors: 0, music: true, amb: true, audioOn: false, found: [], toast: '', journalOpen: false, won: false, rewardOpen: false, basket: { cabbage: 0, pumpkin: 0, berries: 0 } };
+  canvasRef = React.createRef();
+  JKEY = 'small-meadow-journal';
+  WKEY = 'small-meadow-reward';
+  REWARDS = ['a rainbow button · call one up any time', 'golden postcards signed meadow keeper'];
+  CATS = [
+    { label: 'bloom', tools: [['daisy', 'daisy'], ['poppy', 'poppy'], ['sunflower', 'sunflower'], ['lavender', 'lavender'], ['tulip', 'tulip'], ['forget', 'forget-me']] },
+    { label: 'grow', tools: [['tree', 'tree'], ['bush', 'berries'], ['cabbage', 'cabbage'], ['pumpkin', 'pumpkin'], ['mushroom', 'fairy ring']] },
+    { label: 'build', tools: [['path', 'path'], ['bed', 'bed'], ['stone', 'stones'], ['fence', 'fence'], ['pond', 'pond'], ['blanket', 'picnic'], ['cottage', 'cottage']] },
+    { label: 'decor', tools: [['lantern', 'lantern'], ['pot', 'flower pot'], ['bench', 'bench'], ['birdbath', 'birdbath'], ['hay', 'hay bale']] },
+    { label: 'invite', tools: [['rabbit', 'rabbit'], ['cat', 'cat'], ['duck', 'duck'], ['hedgehog', 'hedgehog'], ['snail', 'snail'], ['cow', 'cow'], ['sheep', 'sheep']] },
+    { label: 'tend', tools: [['water', 'water'], ['harvest', 'harvest'], ['dig', 'dig up']] },
+  ];
+  TIPS = {
+    daisy: 'click to sow · drag to scatter', poppy: 'click to sow · drag to scatter', sunflower: 'bees visit and spread them', lavender: 'bees visit and spread them', tulip: 'each bulb a surprise colour', forget: 'small and blue and easy to miss',
+    tree: 'birds rest in trees · leaves fall in autumn', bush: 'berries ripen · harvest them', cabbage: 'rabbits will nibble these', pumpkin: 'slow growers · harvest when ripe', mushroom: 'glows faintly after dark',
+    path: 'drag to lay a gravel path', bed: 'drag to dig a bed · plants grow faster in it', stone: 'drag to lay stepping stones', fence: 'drag to build · birds like to perch', pond: 'freezes over in winter', blanket: 'somewhere to lie down', lantern: 'lights up at night', cottage: 'smoke curls from the chimney',
+    cow: 'grazes slowly · steps aside if crowded', sheep: 'flocks together · startles easily', pot: 'a little pot of blooms', bench: 'a place to sit', birdbath: 'freezes in winter', hay: 'farm-ready', rabbit: 'skittish · loves cabbages', cat: 'follows you · hover slowly to pet', duck: 'click a pond · more clicks bring ducklings', hedgehog: 'curls up when startled', snail: 'leaves a silver trail',
+    water: 'speeds growth · makes blooms bounce', harvest: 'click ripe cabbages, pumpkins & berry bushes', dig: 'pulls up plants, paths & beds',
+  };
+  TODS = [['dawn', '#f3c4c4'], ['noon', '#f7e7a1'], ['golden', '#f2b45a'], ['dusk', '#b48fc4'], ['night', '#3a4c86']];
+  SEASONS = [['spring', '#f2b3c6'], ['summer', '#7dbd3a'], ['autumn', '#e0823a'], ['winter', '#dfe9ee']];
+  WEATHER = [['clear', 'clear', '#f7e7a1'], ['rain', 'rain', '#86b9e4'], ['storm', 'storm', '#5a6a8a'], ['fog', 'fog', '#dfe6e2']];
+  JOURNAL = [
+    ['bloom', 'first bloom', 'sow a seed and wait'], ['pollinate', 'bees spread a flower', 'plant lavender or sunflowers'], ['nibble', 'a rabbit nibbled a cabbage', 'rabbits love greens'],
+    ['harvest', 'first harvest', 'pick something ripe'], ['harvest10', 'a full basket', 'pick ten crops'], ['perch_tree', 'a bird rests in a tree', 'trees invite company'],
+    ['perch_fence', 'a bird on the fence', 'build a fence'], ['pet', 'the cat purred', 'move slowly'], ['ducklings', 'ducklings in a row', 'more ducks, more ducks'],
+    ['deer', 'a deer at dawn', 'quiet mornings'], ['fox', 'a fox in the night', 'stay up late'], ['glow', 'the fairy ring glows', 'mushrooms after dark'],
+    ['rainbow', 'caught a rainbow', 'after the rain'], ['storm', 'weathered a storm', 'when it thunders'], ['fog', 'morning fog', 'roll in the mist'],
+    ['frost', 'a frozen pond', 'ponds in winter'], ['seasons', 'all four seasons', 'turn the year'], ['path', 'laid a garden path', 'build a path'],
+    ['bed', 'dug a flower bed', 'build a bed'], ['postcard', 'sent a postcard', 'take a picture'],
+  ];
+  JMAP = Object.fromEntries(this.JOURNAL.map(j => [j[0], j[1]]));
+  iconEls = {};
+  allKeys = this.CATS.flatMap(c => c.tools.map(t => t[0]));
+  iconRefs = Object.fromEntries(this.allKeys.map(k => [k, el => { if (el) { this.iconEls[k] = el; if (this.mod) this.mod.drawIcon(el, k); } }]));
+  pickTool = Object.fromEntries(this.allKeys.map(k => [k, () => this.setTool(k)]));
+  pickCat = this.CATS.map((c, i) => () => { this.setState({ cat: i }); this.setTool(c.tools[0][0]); });
+  pickTod = this.TODS.map((_, i) => () => { this.setState({ tod: i }); this.engine && this.engine.setTod(i); this.ui(); });
+  pickSeason = this.SEASONS.map((_, i) => () => this.setSeason(i));
+  pickWeather = this.WEATHER.map((_, i) => () => this.setWeather(i));
+  setSeason(i) {
+    this.setState({ season: i }); this.engine && this.engine.setSeason(this.SEASONS[i][0]);
+    this.seen.add(i); try { localStorage.setItem('small-meadow-seasons', JSON.stringify([...this.seen])); } catch (e) { }
+    if (this.seen.size >= 4) this.discover('seasons');
+  }
+  setWeather(i) { this.setState({ weather: i }); this.engine && this.engine.setWeather(this.WEATHER[i][0]); this.ui(); }
+  setTool(k) { this.setState({ tool: k }); this.engine && this.engine.setTool(k); this.ui(); }
+  ui() { this.audio && this.audio.sfx('ui'); }
+  discover = id => {
+    if (!this.JMAP[id] || this.state.found.includes(id)) return;
+    const found = [...this.state.found, id];
+    this.setState({ found, toast: this.JMAP[id] });
+    try { localStorage.setItem(this.JKEY, JSON.stringify(found)); } catch (e) { }
+    this.audio && this.audio.sfx('discover');
+    clearTimeout(this._tt); this._tt = setTimeout(() => this.setState({ toast: '' }), 3200);
+    if (this.JOURNAL.every(j => found.includes(j[0]))) this.win();
+  };
+  win() {
+    if (this.state.won) return;
+    clearTimeout(this._tt); this.setState({ won: true, rewardOpen: true, toast: '' });
+    try { localStorage.setItem(this.WKEY, '1'); } catch (e) { }
+    this.engine && this.engine.celebrate();
+  }
+  toggleMusic = () => { const v = !this.state.music; this.setState({ music: v }); this.audio && this.audio.setMusic(v); };
+  toggleAmb = () => { const v = !this.state.amb; this.setState({ amb: v }); this.audio && this.audio.setAmbient(v); };
+  toggleJournal = () => { this.setState(s => ({ journalOpen: !s.journalOpen })); this.ui(); };
+  postcard = () => {
+    if (!this.engine) return;
+    const url = this.engine.postcard({ gold: this.state.won, left: (this.state.won ? 'meadow keeper · ' : '') + 'a small meadow · ' + this.SEASONS[this.state.season][0] + ', ' + this.TODS[this.state.tod][0], right: new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) });
+    const a = document.createElement('a'); a.href = url; a.download = 'meadow-postcard.png'; document.body.appendChild(a); a.click(); a.remove();
+  };
+  ensureAudio = async () => {
+    if (this.audio) { this.audio.resume(); return; }
+    if (this._audioLoading) return; this._audioLoading = true;
+    try {
+      const m = await import(new URL('js/garden-audio.js', document.baseURI).href);
+      if (this._dead) return;
+      this.audio = m.createAudio(); this.audio.resume();
+      this.audio.setMusic(this.state.music); this.audio.setAmbient(this.state.amb);
+      this.audio.sfx('env', { season: this.SEASONS[this.state.season][0] });
+      this.setState({ audioOn: true });
+    } catch (e) { this._audioLoading = false; }
+  };
+  onKey = e => {
+    if (e.target && /input|textarea/i.test(e.target.tagName)) return;
+    const tools = this.CATS[this.state.cat].tools, n = parseInt(e.key, 10);
+    if (n >= 1 && n <= tools.length) this.setTool(tools[n - 1][0]);
+    if (e.key === 'Tab') { e.preventDefault(); this.pickCat[(this.state.cat + (e.shiftKey ? this.CATS.length - 1 : 1)) % this.CATS.length](); }
+    if (e.key === 'b') this.engine && this.engine.gust();
+    if (e.key === 'r') this.setWeather((this.state.weather + 1) % this.WEATHER.length);
+    if (e.key === 's') this.setSeason((this.state.season + 1) % 4);
+    if (e.key === 'j') this.toggleJournal();
+    if (e.key === 'p') this.postcard();
+    if (e.key === 'Escape') this.setState({ rewardOpen: false });
+    this.ensureAudio();
+  };
+  async componentDidMount() {
+    try { const found = JSON.parse(localStorage.getItem(this.JKEY) || '[]'); this.setState({ found, won: localStorage.getItem(this.WKEY) === '1' || this.JOURNAL.every(j => found.includes(j[0])) }); } catch (e) { }
+    try { this.seen = new Set(JSON.parse(localStorage.getItem('small-meadow-seasons') || '[]')); } catch (e) { this.seen = new Set(); }
+    this.seen.add(this.state.season);
+    window.addEventListener('keydown', this.onKey);
+    window.addEventListener('pointerdown', this.ensureAudio);
+    this.seasonTimer = setInterval(() => { if (this.props.autoSeason) this.setSeason((this.state.season + 1) % 4); }, 45000);
+    const mod = await import(new URL('js/garden-engine.js', document.baseURI).href);
+    if (this._dead) return;
+    this.mod = mod;
+    Object.entries(this.iconEls).forEach(([k, el]) => mod.drawIcon(el, k));
+    this.engine = mod.createGarden(this.canvasRef.current, {
+      getOpts: () => ({ wind: this.props.windStrength ?? 1, density: this.props.grassDensity ?? 1, auto: !!this.props.autoCycle, pix: Math.round(this.props.pixelSize ?? 3) }),
+      onStats: s => { const st = this.state; if (s.blooms !== st.blooms || s.visitors !== st.visitors || s.trees !== st.trees || s.critters !== st.critters) this.setState(s); },
+      onTod: i => this.setState({ tod: i }),
+      onBasket: b => this.setState({ basket: b }),
+      onDiscover: this.discover,
+      sfx: (n, d) => this.audio && this.audio.sfx(n, d),
+    });
+    this.engine.setTool(this.state.tool); this.engine.setTod(this.state.tod);
+  }
+  componentWillUnmount() {
+    this._dead = true; clearInterval(this.seasonTimer); clearTimeout(this._tt);
+    window.removeEventListener('keydown', this.onKey); window.removeEventListener('pointerdown', this.ensureAudio);
+    this.engine && this.engine.destroy(); this.audio && this.audio.destroy();
+  }
+  renderVals() {
+    const { tool, tod, cat, season, weather, music, amb, audioOn, found, basket, journalOpen, won, rewardOpen } = this.state;
+    const sel = '#a8d863', on = '#7dbd3a', off = '#cfc8b4', CP = 'transparent';
+    const bk = [['cabbage', 'cabbage'], ['pumpkin', 'pumpkin'], ['berries', 'berries']].filter(([k]) => basket[k] > 0).map(([k, l]) => basket[k] + ' ' + l);
+    return {
+      canvasRef: this.canvasRef,
+      seasonLabel: this.SEASONS[season][0] + ' · ' + this.WEATHER[weather][1],
+      blooms: this.state.blooms, critters: this.state.critters, visitors: this.state.visitors,
+      basketLabel: bk.length ? 'basket · ' + bk.join(' · ') : 'basket empty',
+      tip: audioOn ? (this.TIPS[tool] || '') : 'click anywhere to wake the sound · ' + (this.TIPS[tool] || ''),
+      cats: this.CATS.map((c, i) => ({ label: c.label, onClick: this.pickCat[i], bg: cat === i ? sel : CP, ink: cat === i ? '#24361a' : '#6f7a58' })),
+      tools: this.CATS[cat].tools.map(([k, label], i) => ({ key: String(i + 1), label, ref: this.iconRefs[k], onClick: this.pickTool[k], bg: tool === k ? sel : CP, lift: tool === k ? '-3px' : '0px', ink: tool === k ? '#24361a' : '#4f5a3e' })),
+      tods: this.TODS.map(([label, dot], i) => ({ label, dot, onClick: this.pickTod[i], bg: tod === i ? sel : CP })),
+      seasons: this.SEASONS.map(([label, dot], i) => ({ label, dot, onClick: this.pickSeason[i], bg: season === i ? sel : CP })),
+      weathers: this.WEATHER.map(([, label, dot], i) => ({ label, dot, onClick: this.pickWeather[i], bg: weather === i ? sel : CP })),
+      actions: [
+        { label: 'breeze', onClick: () => this.engine && this.engine.gust(), bg: '#f6f1e2', ink: '#24361a' },
+        { label: 'rake', onClick: () => this.engine && this.engine.clear(), bg: '#f6f1e2', ink: '#24361a' },
+        { label: 'postcard', onClick: this.postcard, bg: '#f6f1e2', ink: '#24361a' },
+        ...(won ? [{ label: 'rainbow', onClick: () => this.engine && this.engine.rainbow(), bg: '#f7e7a1', ink: '#24361a' }] : []),
+        { label: 'journal ' + found.length + '/' + this.JOURNAL.length + (won ? ' ★' : ''), onClick: this.toggleJournal, bg: journalOpen ? '#24361a' : '#f7e7a1', ink: journalOpen ? '#f7e7a1' : '#24361a' },
+      ],
+      journalOpen, won, rewardOpen,
+      rewards: this.REWARDS.map(text => ({ text })),
+      openReward: () => this.setState({ rewardOpen: true }), closeReward: () => this.setState({ rewardOpen: false }), stopClick: e => e.stopPropagation(),
+      foundCount: found.length + ' / ' + this.JOURNAL.length,
+      journal: this.JOURNAL.map(([id, text, hint]) => { const ok = found.includes(id); return { text: ok ? text : '??? · ' + hint, box: ok ? on : '#f6f1e2', ink: ok ? '#24361a' : '#9a9a80' }; }),
+      toastOn: !!this.state.toast, toast: this.state.toast,
+      musicBg: music && audioOn ? sel : CP, musicDot: music ? on : off,
+      ambBg: amb && audioOn ? sel : CP, ambDot: amb ? on : off,
+      onMusic: this.toggleMusic, onAmb: this.toggleAmb,
+    };
+  }
+}
+</script>
+</body>
+</html>
